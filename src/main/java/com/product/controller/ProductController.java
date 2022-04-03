@@ -29,7 +29,7 @@ import com.product.exception.CustomException;
 import com.product.service.ProductService;
 
 @RestController
-@RequestMapping("product")
+//@RequestMapping("product")
 public class ProductController {
 
 	@Value("${vendor.url}")
@@ -41,6 +41,11 @@ public class ProductController {
 	@Autowired
 	private RestTemplate restTemplate;
 
+	@GetMapping
+	public String check() {
+		return "welcome!";
+	}
+	
 	@PostMapping
 	public ResponseEntity<Product> addProduct(@RequestBody Product product) {
 		Product newProduct=productService.createProduct(product);

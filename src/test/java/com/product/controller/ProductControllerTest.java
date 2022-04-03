@@ -46,11 +46,10 @@ class ProductControllerTest {
 	 @Test
 	 @Order(1)
 	 public void createProduct() throws Exception {
-	    String uri = "/product";
 	    
 	    ProductDetails productDetail=new ProductDetails("model","os",1,256,12,1,"dell"); 
 	   String inputJson = mapToJson(productDetail);
-	   MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+	   MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/")
 	       .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 	    
 	    int status = mvcResult.getResponse().getStatus();
@@ -63,10 +62,9 @@ class ProductControllerTest {
 	 @Test
 	 @Order(2)
 	 public void updateProduct() throws Exception {
-		String uri = "/product";
 	    ProductDetails productDetail=new ProductDetails(createdProductId,"model","os",1,256,12,1,"dell"); 
 	    String inputJson =mapToJson(productDetail);
-	    MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
+	    MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/")
 	       .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 	    int status = mvcResult.getResponse().getStatus();
 	    assertEquals(200, status);
@@ -90,8 +88,7 @@ class ProductControllerTest {
 	 @Test
 	 @Order(3)
 	 public void deleteProduct() throws Exception {
-		String uri = "/product/"+createdProductId;
-	    MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)).andReturn();
+	    MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/"+createdProductId)).andReturn();
 	    int status = mvcResult.getResponse().getStatus();
 	    assertEquals(200, status);
 	 }
