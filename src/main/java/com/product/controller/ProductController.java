@@ -3,6 +3,8 @@ package com.product.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,8 @@ import com.product.service.ProductService;
 //@RequestMapping("product")
 public class ProductController {
 
+	private Logger log=LoggerFactory.getLogger(this.getClass());
+	
 	@Value("${vendor.url}")
 	private String vendorUrl;
 	
@@ -49,12 +53,14 @@ public class ProductController {
 	@PostMapping
 	public ResponseEntity<Product> addProduct(@RequestBody Product product) {
 		Product newProduct=productService.createProduct(product);
+		log.info("new product created");
 		return new ResponseEntity<Product>(newProduct,HttpStatus.CREATED);
 	}
 
 	@PutMapping
 	public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
 		Product updatedProduct=productService.updateProduct(product);
+		log.info("product updated!");
 		return new ResponseEntity<Product>(updatedProduct,HttpStatus.OK);
 	}
 
@@ -68,6 +74,7 @@ public class ProductController {
 		ProductDetails productDetails = new ProductDetails();
 		BeanUtils.copyProperties(product, productDetails);
 		productDetails.setVendorName(vendor.getBody().getName());
+		log.info("get product by Id "+id);
 		return new ResponseEntity<ProductDetails>(productDetails, HttpStatus.OK);
 	}
 
@@ -91,7 +98,7 @@ public class ProductController {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add("totalPages", String.valueOf(products.getTotalPages()));
 		headers.add("totalElement",String.valueOf(products.getTotalElements()));
-
+		log.info("get all product by pagination");
 		return new ResponseEntity<List<ProductDetails>>(productDetails, headers, HttpStatus.ACCEPTED);
 	}
 
@@ -115,7 +122,7 @@ public class ProductController {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add("totalElement",String.valueOf(products.getTotalElements()));
 		headers.add("totalPages", String.valueOf(products.getTotalPages()));
-
+		log.info("get all product by name "+name);
 		return new ResponseEntity<List<ProductDetails>>(productDetails, headers, HttpStatus.ACCEPTED);
 	}
 
@@ -140,19 +147,21 @@ public class ProductController {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add("totalElement",String.valueOf(products.getTotalElements()));
 		headers.add("totalPages", String.valueOf(products.getTotalPages()));
-
+		log.info("get all product with vendor name "+name);
 		return new ResponseEntity<List<ProductDetails>>(productDetails,headers, HttpStatus.ACCEPTED);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Product> deleteProduct(@PathVariable("id") long id) {
 		productService.deleteProduct(id);
+		log.info("delete product with id "+id);
 		return new ResponseEntity<Product>(HttpStatus.OK);
 	}
 
 	@DeleteMapping("/vendor/{id}")
 	public ResponseEntity<Product> deleteProductByVendorId(@PathVariable("id") long id) {
 		productService.deleteAllProductByVendor(id);
+		log.info("delete all the product related to vendor with id "+id);
 		return new ResponseEntity<Product>(HttpStatus.OK);
 	}
 }
